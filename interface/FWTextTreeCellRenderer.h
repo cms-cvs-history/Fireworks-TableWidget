@@ -12,7 +12,11 @@
 
 class FWTextTreeCellRenderer : public FWTextTableCellRenderer
 {
+protected:
+   const static int  s_iconOffset  = 3;
+
 public:
+
    FWTextTreeCellRenderer(const TGGC* iContext = &(getDefaultGC()),
                           const TGGC* iHighlightContext = &(getHighlightGC()),
                           Justify iJustify = kJustifyLeft)
@@ -49,14 +53,25 @@ public:
       return s_picture;
    }
 
+   static
+   int iconWidth()
+   {
+      return  openedImage()->GetWidth() + s_iconOffset;
+   }
+
    virtual void setIndentation(int indentation = 0) { m_indentation = indentation; }
    virtual void setCellEditor(TGTextEntry *editor) { m_editor = editor; }
    virtual void showEditor(bool value) { m_showEditor = value; }
 
    void setIsParent(bool value) {m_isParent = value; }
    void setIsOpen(bool value) {m_isOpen = value; }
-   virtual UInt_t width() const { return FWTextTableCellRenderer::width() + 15 + m_indentation + 
-         (m_isParent ?  closedImage()->GetWidth() + 2: 0  ); }
+
+   virtual UInt_t width() const
+   {
+      int w = FWTextTableCellRenderer::width() + 15 + m_indentation;
+      if (m_isParent)   w += iconWidth();
+      return w;
+   }
 
    virtual void draw(Drawable_t iID, int iX, int iY, unsigned int iWidth, unsigned int iHeight)
    {
@@ -81,14 +96,14 @@ public:
       int xOffset = 0;
       if(m_isParent) {
          if(m_isOpen) {
-            openedImage()->Draw(iID,graphicsContext()->GetGC(),m_indentation+iX,iY);
-            xOffset += openedImage()->GetWidth() + 2;
+            openedImage()->Draw(iID,graphicsContext()->GetGC(),m_indentation+iX,iY +2);
+            xOffset += openedImage()->GetWidth() + s_iconOffset;
          } else {
-            closedImage()->Draw(iID,graphicsContext()->GetGC(),m_indentation+iX,iY);
-            xOffset += closedImage()->GetWidth() + 2;
+            closedImage()->Draw(iID,graphicsContext()->GetGC(),m_indentation+iX,iY +2);
+            xOffset += closedImage()->GetWidth() + s_iconOffset;
          }
       }
-        
+
       FontMetrics_t metrics;
       font()->GetFontMetrics(&metrics);
       gVirtualX->DrawString(iID, graphicsContext()->GetGC(),
