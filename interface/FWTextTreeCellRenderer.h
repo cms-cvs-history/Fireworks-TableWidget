@@ -5,6 +5,7 @@
 
 #include "Fireworks/TableWidget/interface/FWTextTableCellRenderer.h"
 #include "Fireworks/TableWidget/interface/GlobalContexts.h"
+#include "Fireworks/TableWidget/src/FWTabularWidget.h"
 
 #include "TGTextEntry.h"
 #include "TGPicture.h"
@@ -13,7 +14,7 @@
 class FWTextTreeCellRenderer : public FWTextTableCellRenderer
 {
 protected:
-   const static int  s_iconOffset  = 3;
+   const static int  s_iconOffset  = 2;
 
 public:
 
@@ -42,14 +43,14 @@ public:
    static
    const TGPicture* closedImage()
    {
-      static const TGPicture* s_picture=gClient->GetPicture(coreIcondir()+"arrow-black-right-whitebg.png");
+      static const TGPicture* s_picture=gClient->GetPicture(coreIcondir()+"arrow-black-right.png");
       return s_picture;
    }
 
    static
    const TGPicture* openedImage()
    {
-      static const TGPicture* s_picture=gClient->GetPicture(coreIcondir()+"arrow-black-down-whitebg.png");
+      static const TGPicture* s_picture=gClient->GetPicture(coreIcondir()+"arrow-black-down.png");
       return s_picture;
    }
 
@@ -86,12 +87,14 @@ public:
       if (selected())
       {
          GContext_t c = highlightContext()->GetGC();
-         gVirtualX->FillRectangle(iID, c, iX, iY, iWidth, iHeight);
-            
+         gVirtualX->FillRectangle(iID, c, iX - FWTabularWidget::kTextBuffer, iY - FWTabularWidget::kTextBuffer,
+                               iWidth + 2*FWTabularWidget::kTextBuffer, iHeight + 2*FWTabularWidget::kTextBuffer);
+         /* 
          gVirtualX->DrawLine(iID,graphicsContext()->GetGC(),iX-1,iY-1,iX-1,iY+iHeight);
          gVirtualX->DrawLine(iID,graphicsContext()->GetGC(),iX+iWidth,iY-1,iX+iWidth,iY+iHeight);
          gVirtualX->DrawLine(iID,graphicsContext()->GetGC(),iX-1,iY-1,iX+iWidth,iY-1);
          gVirtualX->DrawLine(iID,graphicsContext()->GetGC(),iX-1,iY+iHeight,iX+iWidth,iY+iHeight);
+         */
       } 
       int xOffset = 0;
       if(m_isParent) {
@@ -106,6 +109,8 @@ public:
 
       FontMetrics_t metrics;
       font()->GetFontMetrics(&metrics);
+
+
       gVirtualX->DrawString(iID, graphicsContext()->GetGC(),
                             iX+m_indentation+xOffset, iY+metrics.fAscent, 
                             data().c_str(),data().size());
