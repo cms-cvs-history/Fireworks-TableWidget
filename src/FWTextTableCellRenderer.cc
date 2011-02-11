@@ -8,7 +8,7 @@
 //
 // Original Author:  Chris Jones
 //         Created:  Mon Feb  2 16:43:54 EST 2009
-// $Id: FWTextTableCellRenderer.cc,v 1.3 2010/06/18 12:44:24 yana Exp $
+// $Id: FWTextTableCellRenderer.cc,v 1.3.10.1 2011/02/04 20:16:08 amraktad Exp $
 //
 
 // system include files
@@ -104,6 +104,12 @@ FWTextTableCellRenderer::draw(Drawable_t iID, int iX, int iY, unsigned int iWidt
 
 void
 FWTextTableCellRenderer::setData(const std::string& iData, bool iIsSelected) {
+   m_data = iData;
+   m_isSelected=iIsSelected;
+}
+
+void
+FWTextTableCellRenderer::setData(const char* iData, bool iIsSelected) {
    m_data = iData;
    m_isSelected=iIsSelected;
 }
